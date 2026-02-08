@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 
   const body = await req.json();
   const schema = z.object({
-    asset: z.literal("USDT"), // za demo držimo samo USDT
+    asset: z.literal("USDT"),
     amount: z.number().positive(),
   });
 
@@ -27,13 +27,11 @@ export async function POST(req: Request) {
       if (!acc) throw new Error("Account not found");
       if (acc.usdtCash < amount) throw new Error("Insufficient USDT");
 
-      // 1) SKINI CASH (rezervacija)
       await tx.account.update({
         where: { userId },
         data: { usdtCash: acc.usdtCash - amount },
       });
 
-      // 2) KREIRAJ REQUEST
       await tx.withdrawal.create({
         data: {
           userId,
