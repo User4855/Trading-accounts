@@ -17,6 +17,8 @@ model User {
   account      Account?
   trades       Trade[]
   positions    Position[]
+  withdrawals Withdrawal[]
+
 }
 
 model Account {
@@ -49,5 +51,16 @@ model Trade {
   qty       Float
   price     Float
   notional  Float
+  createdAt DateTime @default(now())
+}
+model Withdrawal {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  asset     String   // npr "USDT"
+  amount    Float
+  status    String   // "PENDING" | "APPROVED" | "REJECTED"
+  note      String?
   createdAt DateTime @default(now())
 }
